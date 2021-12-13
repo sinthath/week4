@@ -1,4 +1,4 @@
-// questions
+// questions for array
 var questions = [
     {
     title: "What is Fox Mulder's middle name?",
@@ -21,6 +21,24 @@ var questions = [
     answer: "Emily and William"
 },
 {
+    title: "Detective Scully has given birth to one child.",
+    choices: [
+        "true",
+        "false"
+    ],
+    answer: "False"
+},
+{
+    title: "What pet did Mulder keep in his apartment?",
+    choices: [
+        "Hamster",
+        "Dog",
+        "Cat",
+        "Fish"
+    ],
+    answer: "Fish"
+},
+{
     title: "What language other than English does Alex Krycek speak?",
     choices: [
         "Russian",
@@ -41,6 +59,26 @@ var questions = [
     answer: "trustno1"
 },
 {
+    title: "What US Armed Forces did Assistant Director Skinner serve?",
+    choices: [
+        "Navy",
+        "Marines",
+        "Air Force",
+        "Army"
+    ],
+    answer: "Marines"
+},
+{
+    title: "What does the name 'Queequeg' refer to in the series?",
+    choices: [
+        "Native American medicine",
+        "Uncovered alien text",
+        "Scully's dog",
+        "Mulder's favourite band"
+    ],
+    answer: "Scully's dog"
+},
+{
     title: "What drink does Mulder prefer during stakeouts?",
     choices: [
         "iced tea",
@@ -49,44 +87,50 @@ var questions = [
         "earl gray tea"
     ],
     answer: "iced tea"
-}
+},
+{
+    title: "Mulder's favourite baseball team is the New York Yankees.",
+    choices: [
+        "true",
+        "false"
+    ],
+    answer: "true"
+},
 ];
 
-// **  Declare Global Variables ** //
-
-// Define amount of game time (in seconds)
+// set game timer in seconds
 let count;
 
-// How many questions do we have?
+// number of questions
 let numQuestions = questions.length;
 
-// Create a variable to keep track of what question we are on
+// keep track of question index
 let currentQuestion;
 
-// Create a variable to hold the STATE of the game
+// game state
 let gameStop = true;
 
-// Create a variable to store the current games score
+// store current games score
 let gameScore;
 
-// Declare our timer variable globally and we can clear it anywhere in our code later (not just when the timer ends, say when the game ends)
+// timer variable
 let timerInterval;
 
-// Create a GLOBAL variable to hold our users answers
+// holder for answers
 let userAnswers = [];
 
-// Grab HTML elements for later DOM manipulation
+// get elements for display
 let time = document.getElementById("timer");
 let score = document.getElementById("user-score");
 
 let startBtn = document.getElementById("start-butt");
 startBtn.addEventListener("click", newGame);
 
-// Get each area <div>
-let welcomeDiv = document.querySelector(".welcome-area");
-let questionDiv = document.querySelector(".ques-area");
-let formDiv = document.querySelector(".form-area");
-let highScoreModal = document.querySelector(".modal-area");
+// get each div area
+let welcomeArea = document.querySelector(".welcome-area");
+let questionArea = document.querySelector(".ques-area");
+let formArea = document.querySelector(".form-area");
+let highScoreModal = document.querySelector(".modal-container");
 let leaderboard = document.querySelector(".user-scores");
 let leaderLink = document.querySelector(".top-score");
 leaderLink.addEventListener("click", showLeader)
@@ -94,18 +138,16 @@ leaderLink.addEventListener("click", showLeader)
 let qTitle = document.getElementById("ques-title");
 let qChoices = document.getElementById("ques-choice");
 
-// Grab form input element 
+// get form input element 
 let username = document.getElementById("playername");
 
-// Capture Submit Event
+// submit input
 let userSubmit = document.getElementById("playerAdd");
 userSubmit.addEventListener("click", saveUser);
 
-// Modal Logic
+// modal settings
 let closeModal = document.querySelector(".close")
 closeModal.addEventListener("click", clearModal);
-// Close Modal when clicked outside of modal-container
-window.addEventListener("click", outsideModal);
 
 let exit = document.querySelector(".exit");
 exit.addEventListener("click", clearModal);
@@ -113,40 +155,35 @@ exit.addEventListener("click", clearModal);
 let clearScores = document.querySelector(".clear");
 clearScores.addEventListener("click", clearLeaderBoard);
 
-// ---------------------------------------------------- //
-//
-// Initalization Function: Function will look into local
-//    storage, convert JSON objct into JavaScript object,
-//    and sort through object array for highest score.
-//
-// ---------------------------------------------------- //
+// check localStorage, convert json objct into js object and sort array for highest score
+
 function initialize() {
 
-    // IF there is nothing stored currently in local storage add some filler data
+    // if nothing stored in local storage add some filler data
     if (localStorage.length === 0) {
-        // Create a variable to PERSIST our high score
+        
         highScoreArray = [
             {
-                username: "Bobby",
+                username: "Jeeves",
                 score: 90
             },
             {
-                username: "Manhattan",
+                username: "Lovebird95",
                 score: 85
             },
             {
-                username: "Kire",
-                score: 83
+                username: "Mulder101",
+                score: 82
             }
         ];
 
         localStorage.setItem("userScores", JSON.stringify(highScoreArray));
     }
 
-    // Pull out scores from the localStorage OBJECT
+    // get scores from localStorage
     let findTopScore = localStorage.getItem("userScores");
 
-    // Parse the string JSON object into a JavaScript Object
+    // parse string JSON object into js object
     let parsedScore = JSON.parse(findTopScore);
     console.log(parsedScore);
 
@@ -154,205 +191,158 @@ function initialize() {
     let max = 0;
     let user;
 
-    // Let's find the TOP score
+    // loop through to get top score
     for (let i = 0; i < parsedScore.length; i++) {
-        // TEST to see if current score [i] is greater than current value of max
-        // NOTE that we are dealing with an OBJECT, the OBJECT contains both 'username' and 'score' properties
+       
         if (max < parsedScore[i].score) {
-            // IF GREATER than set new max value
+            // set new max value
             max = parsedScore[i].score;
             user = parsedScore[i].username;
         }
     }
 
-    questionDiv.classList.add("hide");
-    formDiv.classList.add("hide");
+    questionArea.classList.add("hide");
+    formArea.classList.add("hide");
     highScoreModal.classList.add("hide");
 
 }
 
-// We declared it let's run it in the browswer
 initialize();
 
-// ---------------------------------------------------- //
-//
-// New Game Function: 
-//
-// ---------------------------------------------------- //
-function newGame() {
-    // Set gameEnd variable to FALSE and start game
-    gameStop = false;
-    // Reset score
-    gameScore = 0;
 
-    // Initalize question set 
+// start a new game 
+function newGame() {
+
+    gameStop = false;
+    gameScore = 0;
     currentQuestion = 0;
 
-    // ** REMOVE ??? ** //
-    // Reset answer array for new game
+    // clear answer array for new game
     userAnswers = [];
 
-    // ** Initialize Timer ** //
-    // Define amount of game time (in seconds)
+    // set game time (in seconds)
     count = 90;
     // call timer function to initiate timerInterval
     timer();
-    // Show time on the DOM
+    // display time on page
     time.textContent = count;
 
-    // Hide 'welcome-container' div
-    welcomeDiv.classList.add("hide");
-    // Un-hide 'question-container' div
-    questionDiv.classList.remove("hide");
+    // hide welcome area and show question area
+    welcomeArea.classList.add("hide");
+    questionArea.classList.remove("hide");
 
-    // Run check function
     check();
 }
 
-// ---------------------------------------------------- //
-//
-// Timer Function:
-//
-// ---------------------------------------------------- //
 function timer() {
-     // Create a new timer
     timerInterval = setInterval(function() {
-        // decrement timer count
+        // decrease time
         count--;
         // update display in DOM
         time.textContent = count;
 
-        // Test - Time rus out 
+        
         if (count === 0) {
-            // Run gameOver function
+            
             gameOver();
         }
-    }, 1000)  // Run every 1000 ms (or 1 second)
+    }, 1000)  // run every 1 second
 }
 
 
-// ---------------------------------------------------- //
-//
-// Check Function: Tests if we have run out of quesitons
-//
-// ---------------------------------------------------- //
+
+// check if if any quesitons remain
 function check() {
-    // TEST HOW MANY QUESTIONS LEFT
     if (currentQuestion === numQuestions) {
-        // Run gameOver function
+     
         gameOver();
     } else {
-        loadQuestion();
+        displayQuestion();
     }
 } 
 
-
-// ---------------------------------------------------- //
-//
-// Load Question Function:
-//
-// ---------------------------------------------------- //
-function loadQuestion() {
-    // Clear question title
+// show question on page
+function displayQuestion() {
+    // clear question title
     qTitle.textContent = '';
     qChoices.textContent = '';
 
     for (let i = 0; i < questions[currentQuestion].choices.length; i++) {
         qTitle.textContent = questions[currentQuestion].title;
 
-        //-- Render a new <li> for each question choice --//
-        // Create li element for each answer choice
+        // create list el for choice
         let ansChoice = document.createElement("li");
-        // Add 'id' attribute to each choice 
         ansChoice.setAttribute("id", i);
-        // Add 'data' attribute to each choice
+
+        // add data attr to each choice
         ansChoice.setAttribute("data-name", `data-choice-${i}`);
         ansChoice.setAttribute("value", questions[currentQuestion].choices[i]);
-        // Add our class containing the CSS styling 
+        // add class containing css styling 
         ansChoice.classList.add("ans-choice");
 
 
         // Add event listener
         ansChoice.addEventListener("click", next)
-        // Update text of li element
+        
         ansChoice.textContent = questions[currentQuestion].choices[i];
 
-        // Add answer choice to <ul> DOM
+        // add choice to ul
         qChoices.appendChild(ansChoice);
     }
 
 }
 
-// ---------------------------------------------------- //
-//
-// Log User Selection Function:
-//
-// ---------------------------------------------------- //
+// log for next question
 function next(event) {
-    // Uncomment the lines below and inspect the console output if your struggling with events
-    // console.log(event);
-    // console.log(event.target);
-    // console.log(event.target.id);
-    // console.log(event.target.innerText);
 
     if(event.target.innerText === questions[currentQuestion].answer) {
         gameScore += 10;
     }
 
-    // Increment currentQuestion
+    // increase question counter
     currentQuestion++;
 
-    // Run check
+    // run check
     check();
 }
 
-// ---------------------------------------------------- //
-//
-// End Game Function: Updates gameEnd variable, clears the timer interval, displays end game text 
-//      calls the scoring function and the username form
-//
-// ---------------------------------------------------- //
+// update variable, reset the timer and display score with player form
 function gameOver() {
-    // Set gameStop variable to TRUE
+  
     gameStop = true;
 
-    // Clear countdown timer
+    // clear timer
     clearInterval(timerInterval);
-    time.textContent = "- -";
+    time.textContent = "-- --";
 
-    // Add any time left to game score
+    // add time left to game score
     gameScore += count;
 
-    // Hide question container
-    questionDiv.classList.add("hide");
+    // hide question area
+    questionArea.classList.add("hide");
 
-    // Display Game Score
+    // display score
     score.textContent = gameScore;
-    // Un-hide form container
-    formDiv.classList.remove("hide");
-    // Clear form input field
+    formArea.classList.remove("hide");
     username.value = '';
 }
 
-// ---------------------------------------------------- //
-//
-// Save User/Score Function: 
-//
-// ---------------------------------------------------- //
+
+//  save player name and score total
 function saveUser(event) {
-    // Prevent the form from reloading the page
+   
     event.preventDefault();
-    // Check that the input is NOT empty
+
     if (username.value == '') {
         return;
     }
 
     let tempArray = localStorage.getItem("userScores");
-    // TEST Do we have a JSON object called 'userScores' stored in localStorage?
+    
     let parsedTempArray = JSON.parse(tempArray);
-    // IF we DO have stored data in localStorage run the following
+    // if data store in localStorage run this
     if (parsedTempArray !== null) {
-        // Add current game score to high score array
+        // add game score to high score array
         parsedTempArray.push(
             {
                 username: username.value,
@@ -360,15 +350,14 @@ function saveUser(event) {
             }
         );
 
-        // Sort data from highest to lowest before storing in localStorage
+        // sort highest to lowest scores before storing in localStorage
         sortScores(parsedTempArray);
 
-        // Save updated JavaScript OBJECT to local storage by turning it into a JSON OBJECT
+        // save to localStorage by turning it into json obj
         localStorage.setItem('userScores', JSON.stringify(parsedTempArray));
     } else {  
-        // ELSE - the userScores OBJECT was cleared and we need to create a new ARRAY to put our JS Object into, convert it and store it.
         let highScoreArray = [];
-        // Add current game score to high score array
+        // add score to high score array
         highScoreArray.push(
             {
                 username: username.value,
@@ -377,34 +366,29 @@ function saveUser(event) {
         );
         localStorage.setItem('userScores', JSON.stringify(highScoreArray));
     }
-    // Clear form input field
+    // clear form input field
     username.value = '';
-    // Display the Leader Board
+    
     showLeader();
 }
 
-// ---------------------------------------------------- //
-//
-// Leader Board Function: Function will pull userScore OBJECT
-//     from local storage and create a leader board div
-//
-// ---------------------------------------------------- //
-function showLeader() {
-    // Hide All Container Divs
-    formDiv.classList.add("hide");
-    questionDiv.classList.add("hide");
-    welcomeDiv.classList.add("hide");
+// get userScore from localStorage and display score board
 
-    // Un-hide leader board modal container
+function showLeader() {
+    // hide areas
+    formArea.classList.add("hide");
+    questionArea.classList.add("hide");
+    welcomeArea.classList.add("hide");
+
+    // unhide leader board modal
     highScoreModal.classList.remove("hide");
 
-    // Clear the users and scores from <ul id='highscores'>
     leaderboard.innerHTML = "";
 
     let highScoreBoard = localStorage.getItem('userScores');
     let parsedScoreBoard = JSON.parse(highScoreBoard);
 
-    // Display high scores
+    // loop through score array to add new score
     for (let i = 0; i < parsedScoreBoard.length; i++) {
         let newScore = document.createElement("li");
         newScore.textContent = parsedScoreBoard[i].username + " : " + parsedScoreBoard[i].score;
@@ -413,56 +397,39 @@ function showLeader() {
     }
 }
 
-// ---------------------------------------------------- //
-//
-// Sort Function: Function will sort the Leader Board
-//     into high to low scores
-//
-// ---------------------------------------------------- //
+// sort high to low scores
 function sortScores(scoreObj) {
-    // Sort through the Object and return scores highest to lowest
+    // sort through obj and return scores highest to lowest
     scoreObj.sort( function(a, b) {
-        // Sort by the score values in the array of objects
+        // sort score values in the array of objects
         return b.score - a.score;
     });
 }
 
-// ---------------------------------------------------- //
-//
-// Clear Leader Board Function: Function will clear userScore OBJECT
-//     from local storage
-//
-// ---------------------------------------------------- //
+// clear scoreboard
 function clearLeaderBoard() {
-    // Clear what is in localStorage
     localStorage.removeItem("userScores");
 
-    // TEST to make sure it cleared
-    console.log("Scores Cleared");
-    console.log(localStorage);
-    // Clear the <ul> DOM element
+    // clear element
     leaderboard.innerHTML = "";
 }
 
-// ---------------------------------------------------- //
-//
-// Clear Modal Function: Function will clear Leader Board
-//      Modal overlay and return to welcome screen
-//
-// ---------------------------------------------------- //
+
+// clear leader board modal and return to welcome screen
+
 function clearModal() {
     // hide modal
     highScoreModal.classList.add("hide");
-    // Un-hide Start Message
-    welcomeDiv.classList.remove("hide");
+    // show welcome message
+    welcomeArea.classList.remove("hide");
 }
 
 function outsideModal(event) {
     if (event.target == highScoreModal) {
         // hide modal
         highScoreModal.classList.add("hide");
-        // Un-hide Start Message
-        welcomeDiv.classList.remove("hide");
+        // unhide welcome
+        welcomeArea.classList.remove("hide");
     }
 } 
 
