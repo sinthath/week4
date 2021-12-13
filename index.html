@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <title>Quizathon</title>
+</head>
+
+<body>
+    <div class="content">
+        <!-- Info Bar -->
+        <section class="nav info-area">
+            <div class="info-item score-link">
+                <h1 class="top-score">Leader Board</h1>
+            </div>
+            <div class="info-item header-info">
+                <h1 id="headTitle">X-Files Quizathon</h1>
+            </div>
+            <div class="info-item">
+                <h2>Timer: <span id="timer">-- --</span></h2>
+            </div>
+        </section>
+        
+        <section class="main">
+
+            <!-- quiz area -->
+            <div class="welcome-area">
+                <img src="./assets/images/MulderScully.jpg" alt="">
+                <h1 class="welcome-text">
+                    Welcome tinfoil hat fans to the ultimate X-Files trivia game. 
+                </h1>
+                <p>We will test your knowledge on one of the great TV series of our time. You will be presented with several questions based on the show.  
+                    Answer as many as you can before the clock runs out.  Your score will be provided at the end of the game and you may it add to our high score board.
+                </p>
+                <br>
+                <h4 class="start">Always remember - The Truth is out there. </h4>
+                <br>
+                <h2>Start The Game</h2>
+                <div class="start-game">
+                    <button id="start-butt">
+                        <h2>Enter</h2>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Area -->
+            <div class="ques-area hide">
+                <h1 id="ques-title"><span id="q">Question:</span> Temp</h1>
+                <ul id="ques-choice">
+
+                </ul>
+            </div>
+
+            <!-- score area -->
+            <div class="form-area hide">
+                <h1>You Scored: <span id="user-score">0</span></h1>
+                <form>
+                    <label class="label" for="playername">Your Name:</label>
+                    <input id="playername" type="text">
+                    <button id="playerAdd" type="submit">
+                        <h2>Add Score</h2>
+                    </button>
+                </form>
+            </div>
+
+        <!-- end of main section -->
+        </section>
+
+        <!-- leader board modal -->
+        <div class="modal-container hide">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="close">
+                        &times;
+                    </div>
+                    <h1 class="modal-header-title">Scoreboard</h1>
+                </div>
+                <div class="modal-body">
+                    <ul class="user-scores">
+                        <!-- <LI> ITEMS -->
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <h2 class="modal-footer-msg">Can you beat the high score?</h2>
+                    <div class="highscore-btns">
+                        <button class="modal-btn exit">
+                            <h2>Close</h2>
+                        </button>
+                        <button class="modal-btn clear">
+                            <h2>Clear Scores</h2>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER SECTION -->
+        <section class="footer">
+            <div class="footer-area">
+                <h3>&copy;Dec 2021</h3>
+            </div>
+        </section>
+
+        <!-- end of content -->
+    </div>
+
+    <script src="./assets/js/script.js"></script>
+</body>
+</html>
